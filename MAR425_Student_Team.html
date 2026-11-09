@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Student Team Console</title>
+        <style>
+            :root {
+                --n: #292358;
+                --g: #cf9500;
+                --bg: #f4f5f9;
+                --ink: #202432;
+                --line: #d8d8e3;
+                --blue: #e8f1fb;
+                --green: #e2f0d9;
+                --amber: #fff2cc;
+                --red: #f5d7d7;
+                --grey: #ececf2;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                margin: 0;
+                background: var(--bg);
+                color: var(--ink);
+                font: 15px/1.48 Arial, sans-serif;
+            }
+
+            .wrap {
+                max-width: 1120px;
+                margin: auto;
+                padding: 14px;
+            }
+
+            .hero {
+                background: var(--n);
+                color: #fff;
+                border-left: 10px solid var(--g);
+                border-radius: 14px;
+                padding: 22px;
+            }
+
+            .hero b {
+                color: var(--g);
+            }
+
+            .hero h1 {
+                margin: 5px 0;
+                font-size: 27px;
+            }
+
+            .card {
+                background: #fff;
+                border: 1px solid var(--line);
+                border-radius: 12px;
+                padding: 16px;
+                margin-top: 14px;
+                box-shadow: 0 2px 8px #29235810;
+            }
+
+            .grid {
+                display: grid;
+                grid-template-columns: 1.05fr .95fr;
+                gap: 14px;
+            }
+
+            .full {
+                grid-column: 1 / -1;
+            }
+
+            .row {
+                display: flex;
+                gap: 10px;
+                align-items: end;
+                flex-wrap: wrap;
+            }
+
+            .grow {
+                flex: 1 1 220px;
+            }
+
+            label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            select,
+            input,
+            textarea {
+                width: 100%;
+                border: 1px solid #aaaeba;
+                border-radius: 8px;
+                padding: 10px;
+                font: inherit;
+                background: #fff;
+            }
+
+            textarea {
+                min-height: 95px;
+                resize: vertical;
+            }
+
+            button {
+                border: 0;
+                border-radius: 8px;
+                padding: 10px 14px;
+                background: var(--n);
+                color: #fff;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            button:disabled {
+                opacity: .45;
+                cursor: not-allowed;
+            }
+
+            .gold {
+                background: #8c6200;
+            }
+
+            .grey {
+                background: #636779;
+            }
+
+            .red {
+                background: #992020;
+            }
+
+            .green {
+                background: #397a39;
+            }
+
+            .feed {
+                max-height: 410px;
+                overflow: auto;
+            }
+
+            .item {
+                padding: 11px;
+                margin: 8px 0;
+                border-left: 5px solid var(--n);
+                border-radius: 8px;
+                background: var(--blue);
+            }
+
+            .mine {
+                background: var(--green);
+                border-color: #548235;
+            }
+
+            .inject {
+                background: var(--amber);
+                border-color: #a87400;
+            }
+
+            .control {
+                background: var(--grey);
+                border-color: #666;
+            }
+
+            .meta {
+                font-size: 12px;
+                font-weight: bold;
+            }
+
+            .role {
+                background: #faf7ee;
+                border-left: 5px solid var(--g);
+                padding: 12px;
+                border-radius: 7px;
+            }
+
+            .small {
+                font-size: 12px;
+                color: #656879;
+            }
+
+            .notice {
+                font-weight: bold;
+                min-height: 22px;
+            }
+
+            .ok {
+                color: #286b2b;
+            }
+
+            .bad {
+                color: #992020;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+
+            .checks label {
+                font-weight: normal;
+                margin: 7px 0;
+            }
+
+            .checks input {
+                width: auto;
+                margin-right: 7px;
+            }
+
+            .decision {
+                background: #fff9e5;
+                border: 1px solid #e4c76d;
+                border-radius: 9px;
+                padding: 12px;
+            }
+
+            .status {
+                display: inline-block;
+                padding: 5px 10px;
+                border-radius: 999px;
+                background: var(--grey);
+                font-weight: bold;
+            }
+
+            .status.live {
+                background: var(--green);
+                color: #286b2b;
+            }
+
+            .status.paused {
+                background: var(--amber);
+                color: #765200;
+            }
+
+            .status.ended {
+                background: var(--red);
+                color: #8b1717;
+            }
+
+            .inject-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .inject-grid button {
+                text-align: left;
+            }
+
+            .timer {
+                font-size: 26px;
+                font-weight: bold;
+                color: var(--n);
+            }
+
+            @media (max-width: 800px) {
+                .grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .full {
+                    grid-column: auto;
+                }
+
+                .inject-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media print {
+                button,
+                .no-print {
+                    display: none !important;
+                }
+
+                .feed {
+                    max-height: none;
+                }
+
+                .card {
+                    box-shadow: none;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <main class="wrap">
+            <section class="hero">
+                <b>MAR425 MARITIME SAFETY AND EMERGENCY RESPONSE</b>
+                <h1>Student Team Console</h1>
+                <p>One device per team. Discuss, agree, then communicate.</p>
+            </section>
+
+            <section class="card no-print" id="joinCard">
+                <div class="row">
+                    <div class="grow">
+                        <label>
+                            Assigned team
+                            <select id="team">
+                                <option>Command</option>
+                                <option>Engine Room</option>
+                                <option>Action Team 1</option>
+                                <option>Action Team 2</option>
+                                <option>Support</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="grow">
+                        <label>
+                            Team PIN
+                            <input id="pin" type="password" inputmode="numeric">
+                        </label>
+                    </div>
+
+                    <div class="grow">
+                        <label>
+                            Exercise code
+                            <input id="exercise" value="MAR425-S16-LIVE">
+                        </label>
+                    </div>
+
+                    <div>
+                        <button id="join">Lock team and join</button>
+                    </div>
+                </div>
+
+                <p id="connect" class="notice">Enter the assigned PIN.</p>
+            </section>
+
+            <section id="workspace" class="hidden">
+                <section class="card">
+                    <div class="row">
+                        <div>
+                            <h2 id="teamTitle"></h2>
+                            <span id="state" class="status">LOBBY</span>
+                        </div>
+
+                        <div style="margin-left:auto">
+                            <button class="grey no-print" id="refresh">Refresh</button>
+                        </div>
+                    </div>
+
+                    <div id="role" class="role"></div>
+                </section>
+
+                <div class="grid">
+                    <section class="card">
+                        <h2>Private information feed</h2>
+                        <div id="feed" class="feed"></div>
+                    </section>
+
+                    <section class="card">
+                        <h2>Agreed team communication</h2>
+
+                        <div class="row">
+                            <div class="grow">
+                                <label>
+                                    Recipient
+                                    <select id="recipient"></select>
+                                </label>
+                            </div>
+
+                            <div class="grow">
+                                <label>
+                                    Information status
+                                    <select id="status">
+                                        <option>Confirmed</option>
+                                        <option>Reported but unverified</option>
+                                        <option>Conflicting</option>
+                                        <option>Unknown</option>
+                                        <option>Instruction</option>
+                                        <option>Repeat-back</option>
+                                        <option>Completion report</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+
+                        <p>
+                            <label>
+                                Message
+                                <textarea id="message" placeholder="Enter only the message agreed by the whole group"></textarea>
+                            </label>
+                        </p>
+
+                        <div class="decision">
+                            <strong>TEAM DECISION CHECK</strong>
+                            <p class="small">Complete all three checks to enable transmission.</p>
+
+                            <div class="checks">
+                                <label><input type="checkbox" class="gate">The whole team agrees this message is accurate.</label>
+                                <label><input type="checkbox" class="gate">Confirmed information is separated from uncertainty.</label>
+                                <label><input type="checkbox" class="gate">The recipient and required action or request are clear.</label>
+                            </div>
+                        </div>
+
+                        <p>
+                            <button id="send" disabled>Send agreed team message</button>
+                        </p>
+
+                        <p id="notice" class="notice"></p>
+                    </section>
+
+                    <section class="card full">
+                        <h2>Live communication record for this team</h2>
+                        <div id="log" class="feed"></div>
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <script>
+            const BASE = 'https://kvwaolbyebadeyumbbrp.supabase.co/rest/v1/messages';
+            const KEY = 'sb_publishable_fcuA8HhyKtjVBaRZ51bYGQ_KvMkaaRQ';
+            const headers = {
+                apikey: KEY,
+                Authorization: 'Bearer ' + KEY,
+                'Content-Type': 'application/json'
+            };
+            const $ = id => document.getElementById(id);
+            const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c]));
+
+            let rows = [];
+
+            async function fetchRows(ex) {
+                const r = await fetch(`${BASE}?exercise=eq.${encodeURIComponent(ex)}&select=*&order=created_at.asc`, {
+                    headers: {
+                        apikey: KEY,
+                        Authorization: 'Bearer ' + KEY
+                    }
+                });
+
+                if (!r.ok) {
+                    throw new Error(`${r.status} ${await r.text()}`);
+                }
+
+                return await r.json();
+            }
+
+            async function addRow(v) {
+                const r = await fetch(BASE, {
+                    method: 'POST',
+                    headers: {
+                        ...headers,
+                        Prefer: 'return=representation'
+                    },
+                    body: JSON.stringify(v)
+                });
+
+                if (!r.ok) {
+                    throw new Error(`${r.status} ${await r.text()}`);
+                }
+
+                return await r.json();
+            }
+
+            function latestState() {
+                const x = rows.filter(r => r.sender === 'SYSTEM' && r.status === 'EXERCISE_STATE').at(-1);
+                return x ? x.message : 'LOBBY';
+            }
+
+            function stateBadge(id) {
+                const s = latestState();
+                const e = $(id);
+                e.textContent = s;
+                e.className = 'status ' + s.toLowerCase();
+                return s;
+            }
+
+            function timeOf(x) {
+                return new Date(x).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            function downloadCSV(data, name) {
+                const h = ['Time', 'Sender', 'Recipient', 'Status', 'Message'];
+                const csv = [h, ...data.map(r => [r.created_at, r.sender, r.recipient, r.status, r.message])]
+                    .map(a => a.map(v => '"' + String(v ?? '').replace(/"/g, '""') + '"').join(','))
+                    .join('\n');
+
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+                a.download = name;
+                a.click();
+                URL.revokeObjectURL(a.href);
+            }
+
+            const TEAMS = ["Command", "Engine Room", "Action Team 1", "Action Team 2", "Support"];
+            const PINS = {
+                "Command": "4216",
+                "Engine Room": "2906",
+                "Action Team 1": "7352",
+                "Action Team 2": "6149",
+                "Support": "3284"
+            };
+            const ROLES = {
+                "Command": "Maintain the common operational picture. Verify uncertainty, issue clear instructions and authorise passenger information only when destination and route are confirmed.",
+                "Engine Room": "Report technical indications and limitations. Do not infer the source of smoke or direct passenger movement.",
+                "Action Team 1": "Observe and report conditions. Separate first-hand observation from second-hand information.",
+                "Action Team 2": "Act only under clear tasking. Repeat back safety-critical instructions and report completion.",
+                "Support": "Manage passenger information, assistance and accountability. Do not invent routes, causes or completion of accountability."
+            };
+
+            let me = '';
+            let ex = '';
+            let poll = null;
+
+            function card(r) {
+                return `<div class="item ${r.sender === 'Exercise Controller' ? 'inject' : r.sender === me ? 'mine' : ''}">
+                    <div class="meta">${timeOf(r.created_at)} | ${esc(r.sender)} → ${esc(r.recipient)} | ${esc(r.status)}</div>
+                    ${esc(r.message)}
+                </div>`;
+            }
+
+            function render() {
+                const state = stateBadge('state');
+                $('send').disabled = state !== 'LIVE' || ![...document.querySelectorAll('.gate')].every(x => x.checked);
+
+                const v = rows.filter(r => r.sender !== 'SYSTEM' && (r.sender === me || r.recipient === me));
+                $('feed').innerHTML = v.length ? v.slice().reverse().map(card).join('') : '<p class="small">No information received.</p>';
+                $('log').innerHTML = v.length ? v.map(card).join('') : '<p class="small">No communications logged.</p>';
+            }
+
+            async function load(silent = false) {
+                try {
+                    rows = await fetchRows(ex);
+
+                    if (!silent) {
+                        $('connect').className = 'notice ok';
+                        $('connect').textContent = 'Connected. Team is locked to ' + me + '.';
+                    }
+
+                    render();
+                } catch (e) {
+                    $('connect').className = 'notice bad';
+                    $('connect').textContent = 'Connection failed: ' + e.message;
+                }
+            }
+
+            $('join').onclick = () => {
+                const t = $('team').value;
+
+                if ($('pin').value !== PINS[t]) {
+                    $('connect').className = 'notice bad';
+                    $('connect').textContent = 'Incorrect team PIN.';
+                    return;
+                }
+
+                me = t;
+                ex = $('exercise').value.trim();
+                $('joinCard').classList.add('hidden');
+                $('workspace').classList.remove('hidden');
+                $('teamTitle').textContent = me + ' Team';
+                $('role').textContent = ROLES[me];
+                $('recipient').innerHTML = '';
+                TEAMS.filter(x => x !== me).forEach(x => $('recipient').add(new Option(x, x)));
+
+                load();
+                poll = setInterval(() => load(true), 2000);
+            };
+
+            document.querySelectorAll('.gate').forEach(x => x.onchange = render);
+            $('refresh').onclick = () => load(false);
+
+            $('send').onclick = async () => {
+                const text = $('message').value.trim();
+
+                if (!text) {
+                    $('notice').className = 'notice bad';
+                    $('notice').textContent = 'Enter the agreed message.';
+                    return;
+                }
+
+                try {
+                    await addRow({
+                        exercise: ex,
+                        sender: me,
+                        recipient: $('recipient').value,
+                        status: $('status').value,
+                        message: text
+                    });
+
+                    $('notice').className = 'notice ok';
+                    $('notice').textContent = 'Message sent.';
+                    $('message').value = '';
+                    document.querySelectorAll('.gate').forEach(x => x.checked = false);
+                    await load(true);
+                } catch (e) {
+                    $('notice').className = 'notice bad';
+                    $('notice').textContent = 'Send failed: ' + e.message;
+                }
+            };
+        </script>
+    </body>
+</html>
